@@ -7,6 +7,7 @@ import itertools
 # from numpy.core.numeric import outer
 input = stdin.readline
 import copy
+import sys
 
 MOD = 1000000007
 INF = 122337203685477580
@@ -44,7 +45,21 @@ ticket_kind ={
 ## (購入馬券,馬の番号),購入金額,倍率を書いてください
 ## とりあえず１６頭立てです
 myticket = [
-    (("三連単",1,2,3),100,2.0) #馬連
+    (("単勝",9),100,14.4),
+    (("複勝",6),100,4.8),
+    (("複勝",16),100,2.7),
+    (("単勝",9),100,14.4),
+    (("単勝",12),100,3.6),
+    (("単勝",14),100,2.9),
+    (("ワイド",4,9),100,3.8),
+    (("ワイド",4,12),100,3.5),
+    (("ワイド",4,14),100,3.5),
+    (("ワイド",9,12),100,8.8),
+    (("ワイド",9,14),100,7.4),
+    (("ワイド",9,16),100,21.4),
+    (("ワイド",12,14),100,2.5),
+    (("ワイド",12,16),100,8.9),
+    (("ワイド",14,16),100,6.0)
 ]
 
 def ticket_hit(ticket,horse):
@@ -96,7 +111,7 @@ def winnning_ticket_fn(data):
     cnt = 0
     for i in data:
         
-        print("No.",cnt ," >> " ,"return  >> " + str(i[0]), "horce >> " + str(i[1])  )
+        print("No.",cnt ," >> " ,"return  >> " + str(i[0]/spent_money) + "倍", "horce >> " + str(i[1])  )
         cnt += 1
         if cnt == 100:
             break;
@@ -124,11 +139,36 @@ def horse_sim():
     winnning_ticket_fn(winning_ticket)
     return
     
+def horse_sim_single():
+    print("ウマの順番を入力してください")
+    vec =list(map(int, input().split())) 
+    n = NUMBER_OF_HORSE
+    winning_ticket = []
+    for i1 in range(1,n+1):
+        for i2 in range(1,n+1):
+            for i3 in range(1,n+1):                
+                l = [i1,i2,i3]
+                if l != vec:
+                    continue
+                if i1 == i2 or i2 == i3 or i3 == i1:
+                    continue
+                back_money = 0
+                for ticket in myticket:
+                    if ticket_hit(ticket= ticket[0],horse = l):
+                        back_money += ticket[1]*ticket[2]
+                        print(l,ticket)
+                if back_money > 0:
+                    winning_ticket.append((back_money,l))
     
+    winnning_ticket_fn(winning_ticket)
+    return
         
 
 
 if __name__ == '__main__':
-    horse_sim()
+    if sys.argv[-1] == "single":
+        horse_sim_single()
+    else:
+        horse_sim()
     
  
